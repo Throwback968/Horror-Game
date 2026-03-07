@@ -21,12 +21,9 @@
 }
 
 #startScreen, #nameScreen, #introductionScreen {
-    position: absolute;
-    place-self: center;
-    inset: 0;
     text-align: center;
     font-size: 34px;
-    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     border: 8px solid rgb(61, 56, 56);
     border-radius: 20px;
     padding: 80px;
@@ -40,20 +37,26 @@ body {
 }
 
 button {
-    font-size: 20px;
+    font-size: 20px;    
     padding: 10px 20px;
     margin: 20px;
     cursor: pointer;
     background-color: #7c139c;
     color: white;
-    z-index: 1;;
+    z-index: 0;
+}
+
+.menuContainer {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 #homeBtn {
-    position: absolute;
-    place-self: center;
-    inset: 0;
-    top: 750px;
+    margin-top: 20px;
 }
 
 #myVideo {
@@ -80,9 +83,6 @@ input{
 }
 
 #prologueScreen{
-    position: absolute;
-    place-self: center;
-    inset: 0;
     text-align: center;
     font-size: 34px;
     font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
