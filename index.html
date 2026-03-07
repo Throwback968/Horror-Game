@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+
+<!-- setting default language -->
+<html lang = "en">
+
+    <!-- not visible -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="indexStyle.css">
+
+    <title>My Web Page</title>
+</head>
+
+    <!-- Visible content -->
+<div id = "Header">
+    <h1>My Story Game</h1>
+</div>
+
+<video src="mv.mov" muted loop autoplay id="myVideo"></video>
+
+<div id="startScreen">
+    <h1>Story Time!</h1>
+    <button id="startBtn">Start Story</button>
+</div>
+
+<div id="nameScreen" style="display:none;">
+    <h1>What's your name?</h1>
+    <input id="nameInput">
+    <button id="submitBtn">Enter</button>
+</div>
+
+<div id="introductionScreen" style="display:none;">
+    <h1 id="storyTitle">Welcome</h1>
+    <p id="storyText"></p>
+    <button id="continueBtn">Enter</button>
+</div>
+
+<div id="prologueScreen" style="display:none;">
+    <h1 id="prologue">And so it begins...</h1>
+    <p id="prologueText">
+        You find yourself in a familiar forest behind your house. 
+        You've explored this place many times before, but today it feels different.
+        The trees seem taller, the air thicker, and the sounds of nature louder.
+        You look behind you and realize that, for the first time,
+        you can't see your house and lost sense of direction.
+        You consider on your options. You can either try to find your way back home,
+        or venture deeper into the forest to see if you can find any clues about where you are.
+    </p>
+    <button id="choiceOne">Try to find your way back home</button>
+    <button id="choiceTwo">Venture deeper into the forest</button>
+</div>
+
+<button id="homeBtn">Home</button>
+
+</html>
+
+<script src="theMagic.js"></script>
