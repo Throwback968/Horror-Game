@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+
+<!-- setting default language -->
+<html lang = "en">
+
+    <!-- not visible -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="indexStyle.css">
+
+    <title>My Web Page</title>
+</head>
+
+    <!-- Visible content -->
+<div id = "Header">
+    <h1>My Horror Game</h1>
+</div>
+
+<video src="website_background2.mov" muted loop autoplay id="myVideo"></video>
+
+<div class="menuContainer">
+
+    <div id="startScreen">
+        <h1>Start your game</h1>
+        <button id="startBtn">Start Game</button>
+    </div>
+
+    <div id="nameScreen" style="display:none;">
+        <h1>What's your name?</h1>
+        <input id="nameInput">
+        <button id="submitBtn">Enter</button>
+    </div>
+
+    <div id="introductionScreen" style="display:none;">
+        <h1 id="storyTitle">Welcome</h1>
+        <p id="storyText"></p>
+        <button id="continueBtn">Continue</button>
+    </div>
+
+    <div id="prologueScreen" style="display:none;">
+        <h1 id="prologue">And so it begins...</h1>
+        <img src="27352456687_17f4c0ffe7_b.jpg" alt="Prologue Image" id="prologueImage">
+        <p id="prologueText"></p>
+        <button id="choiceOne">Let's get out.</button>
+    </div>
+
+    <canvas id="gameCanvas" width="800" height="600"></canvas>
+    
+    <button id="homeBtn">Home</button>
+
+    <script src="https://tiptopjar.com/widget.js"
+    data-username="Throwback"
+    data-mode="button"
+    data-button-text="Send Throwback a tip"
+    data-button-color="black"
+    data-button-size="sm" id ="tipContainer">
+    </script>
+
+    <p id="authorNote">BY THROWBACK</p>
+
+</div>
+
+<audio id="backgroundMusic" src="background_music.mp3" autoplay loop></audio>
+
+</html>
+
+<script src="theMagic.js"></script>
