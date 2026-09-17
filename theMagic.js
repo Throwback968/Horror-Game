@@ -1,5 +1,6 @@
 // JavaScript for the story game
 
+console.log("theMagic.js loaded successfully!");
 
 // Get references to the buttons and screens
 const startBtn = document.getElementById("startBtn");
@@ -32,13 +33,23 @@ const PLAYER_HEIGHT = 50;
 const OBSTACLE_START_X = 600;
 const OBSTACLE_START_Y = 540;
 const OBSTACLE_WIDTH = 40;
-const OBSTACLE_HEIGHT = 60;
-const OBSTACLE_SPEED = 5;
+const OBSTACLE_HEIGHT = 80;
+const OBSTACLE_SPEED = 3 ;
+
+// image for the player
+const img = new Image();
+img.src = 'gameDude.png';
+
+// Define the minimum and maximum gap between obstacles
+const MIN_OBSTACLE_GAP = 400;
+const MAX_OBSTACLE_GAP = 650;
+const OBSTACLE_SPAWN_THRESHOLD = 300;
 
 // Define the screens and story lines
-screens = [startScreen, nameScreen, introductionScreen, prologueScreen];
+let screens = [startScreen, nameScreen, introductionScreen, prologueScreen];
 
-storyLines = 
+// Define the story lines for the game
+let storyLines = 
     [
         `You find yourself in a familiar forest behind your house. 
         You've explored this place many times before, but today it feels different.
@@ -49,7 +60,8 @@ storyLines =
         or venture deeper into the forest to see if you can find any clues about where you are.`,
     ];
 
-buttonChoices = 
+// Define the choices for the player
+let buttonChoices = 
     [
         `Let's get out.`
     ];
@@ -69,14 +81,10 @@ let player = {
 let keys = {};
 
 // Define the obstacle object
-let obstacle = {
-    x: OBSTACLE_START_X,
-    y: OBSTACLE_START_Y,
-    width: OBSTACLE_WIDTH,
-    height: OBSTACLE_HEIGHT,
-    speed: OBSTACLE_SPEED,
-    passedPlayer: false
-};
+let obstacles = [];
+
+obstacles.push(createObstacle(OBSTACLE_START_X));
+obstacles.push(createObstacle(OBSTACLE_START_X + MIN_OBSTACLE_GAP + 100));
 
 // Define Game State
 let gameState = "playing";
@@ -84,17 +92,13 @@ let gameState = "playing";
 // initialize the score
 let score = 0;
 
-document.addEventListener("keydown", function(event) {
-    keys[event.key] = true;
-});
-
-document.addEventListener("keyup", function(event) {
-    keys[event.key] = false;
-});
+// Define the obstacle speed variable
+let obstacleSpeed = OBSTACLE_SPEED;
 
 // Function to draw the player on the canvas
 function drawPlayer() {
-    ctx.fillStyle = "red";
+    const pattern = ctx.createPattern(img, 'repeat');
+    ctx.fillStyle = pattern;
     ctx.fillRect(
         player.x,
         player.y,
@@ -133,47 +137,79 @@ function updatePlayer() {
 }
 
 // Update the obstacle's position
-function updateObstacle() {
+function updateObstacles() {
+ 
+     for (let obstacle of obstacles) {
+        
+        obstacle.x -= obstacleSpeed;
 
-    obstacle.x -= obstacle.speed;
+        if (obstacle.x + obstacle.width < player.x && !obstacle.passedPlayer) {
+            score++;
 
+            if (score % 5 === 0) {
+            obstacleSpeed += 0.5; // Increase speed every 5 points
+            }
 
-    if (obstacle.x + obstacle.width < 0) {
-    obstacle.x = canvas.width;
-    obstacle.passedPlayer = false;
-}
-
-    if (obstacle.x + obstacle.width < player.x && !obstacle.passedPlayer) {
-    score++;
-
-    if (score % 5 === 0) {
-        obstacle.speed += 0.5; // Increase speed every 5 points
-    }
-    obstacle.passedPlayer = true;
+            obstacle.passedPlayer = true;
+        }
     }
 
+    obstacles = obstacles.filter(obstacle => obstacle.x + obstacle.width > 0);
+
+    const lastObstacle = obstacles[obstacles.length - 1];
+
+    if (
+        lastObstacle &&
+        lastObstacle.x < canvas.width + OBSTACLE_SPAWN_THRESHOLD
+    ) {
+        spawnObstacle();
+    }
 }
+
 
 // Draw the obstacle on the canvas
-function drawObstacle() {
-    ctx.fillStyle = "White";
-    ctx.fillRect(
-        obstacle.x,
-        obstacle.y,
-        obstacle.width,
-        obstacle.height
-    );
+function drawObstacles() {
+
+    for (let obstacle of obstacles) {
+        ctx.fillStyle = "red";
+        ctx.fillRect(
+            obstacle.x,
+            obstacle.y,
+            obstacle.width,
+            obstacle.height
+        );
+    }
+}
+
+// Spawn a new obstacle at a random distance from the last obstacle
+function spawnObstacle() {
+    const lastObstacle = obstacles[obstacles.length - 1];
+
+    let gap = Math.random() * (MAX_OBSTACLE_GAP - MIN_OBSTACLE_GAP)
+        + MIN_OBSTACLE_GAP;
+
+    let spawnX;
+
+    if (lastObstacle) {
+        spawnX = lastObstacle.x + lastObstacle.width + gap;
+    } else {
+        spawnX = canvas.width + gap;
+    }
+
+    obstacles.push(createObstacle(spawnX));
 }
 
 // Checks for collision between the player and the obstacle
 function checkCollision() {
-    if (
-        player.x < obstacle.x + obstacle.width &&
-        player.x + player.width > obstacle.x &&
-        player.y < obstacle.y + obstacle.height &&
-        player.y + player.height > obstacle.y
-    ) {
-        gameState = "gameOver";
+    for (let obstacle of obstacles) {
+        if (
+            player.x < obstacle.x + obstacle.width &&
+            player.x + player.width > obstacle.x &&
+            player.y < obstacle.y + obstacle.height &&
+            player.y + player.height > obstacle.y
+        ) {
+            gameState = "gameOver";
+        }
     }
 }
 
@@ -193,19 +229,30 @@ function drawGameOver() {
     );
 }
 
+// Function to create a new obstacle
+function createObstacle(x) {
+    return {
+        x: x,
+        y: OBSTACLE_START_Y,
+        width: OBSTACLE_WIDTH,
+        height: OBSTACLE_HEIGHT,
+        passedPlayer: false
+    };
+}
+
 // Game loop to update and render the game
 function gameLoop() {
 
     if (gameState === "playing") {
     updatePlayer();
-    updateObstacle();
+    updateObstacles();
     checkCollision();
     }
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     drawPlayer();
-    drawObstacle();
+    drawObstacles();
 
     if (gameState === "gameOver") {
         drawGameOver();
@@ -245,6 +292,16 @@ function resetGame() {
 }
 
 gameLoop();
+
+// Event listeners for keyboard input
+document.addEventListener("keydown", function(event) {
+    keys[event.key] = true;
+});
+
+// Event listener for keyup to stop movement
+document.addEventListener("keyup", function(event) {
+    keys[event.key] = false;
+});
 
 // Event listener for the start button
 startBtn.addEventListener("click", function() {
@@ -299,10 +356,11 @@ document.addEventListener("keydown", function(event) {
         player.velocityY = 0;
         player.grounded = false;
 
-        obstacle.x = OBSTACLE_START_X;
-        obstacle.speed = OBSTACLE_SPEED;
-        obstacle.passedPlayer = false;
-
+        obstacles = [];
+        obstacles.push(createObstacle(OBSTACLE_START_X));
+        obstacles.push(createObstacle(OBSTACLE_START_X + MIN_OBSTACLE_GAP + 100));
+        obstacles.push(createObstacle(OBSTACLE_START_X + MIN_OBSTACLE_GAP + 300));
+        obstacleSpeed = OBSTACLE_SPEED;
         score = 0;
     }
 });
